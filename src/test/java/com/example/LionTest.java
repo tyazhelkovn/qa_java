@@ -1,6 +1,8 @@
 package com.example;
 
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
@@ -8,6 +10,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.junit.Test;
 import java.util.List;
+
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -52,16 +56,14 @@ public class LionTest {
         assertEquals(expectedSex, actualSex);
     }
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
-    public void shouldCreatingLionThrowExeptionTest() {
-        String expectedExeptionMessage = "Используйте допустимые значения пола животного - самей или самка";
-        String actualExeptionMessage = "";
-        try {
-            Lion lion = new Lion("invalid", feline);
-        } catch (Exception e) {
-            actualExeptionMessage = e.getMessage();
-        }
-        assertEquals(expectedExeptionMessage, actualExeptionMessage);
+    public void shouldCreatingLionThrowExeptionTest() throws Exception {
+        thrown.expect(Exception.class);
+        thrown.expectMessage("Используйте допустимые значения пола животного - самей или самка");
+        new Lion("invalid", feline);
     }
 
     @Test
@@ -72,17 +74,10 @@ public class LionTest {
         assertEquals(List.of("Животные", "Птицы", "Рыба"), actualList);
     }
 
-    @Test
+    @Test(expected=Exception.class)
     public void shouldGettingLionThrowExceptionTest() throws Exception {
         Lion lion = new Lion("Самец", feline);
-        String expectedExceptionMessage = "java.lang.Exception";
-        String actualExceptionMessage = "";
         Mockito.when(feline.getFood("Хищник")).thenThrow(Exception.class);
-        try {
-            lion.getFood();
-        } catch (Exception e) {
-            actualExceptionMessage = e.toString();
-        }
-        assertEquals(expectedExceptionMessage, actualExceptionMessage);
+        lion.getFood();
     }
 }

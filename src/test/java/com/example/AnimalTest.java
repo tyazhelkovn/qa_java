@@ -1,6 +1,8 @@
 package com.example;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import java.util.List;
@@ -32,17 +34,16 @@ public class AnimalTest {
         assertEquals(expectedList, actualList);
     }
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
-    public void getFoodExceptionTest() {
+    public void getFoodExceptionTest() throws Exception {
         Animal animal = new Animal();
-        String actualException = "";
-        String expectedException = "Неизвестный вид животного, используйте значение Травоядное или Хищник";
-        try {
-            animal.getFood("Хизник");
-        } catch (Exception e) {
-            actualException = e.getMessage();
-        }
-        assertEquals(expectedException, actualException);
+        String expectedExceptionMessage = "Неизвестный вид животного, используйте значение Травоядное или Хищник";
+        thrown.expect(Exception.class);
+        thrown.expectMessage(expectedExceptionMessage);
+        animal.getFood("Хизник");
     }
 
     @Test
